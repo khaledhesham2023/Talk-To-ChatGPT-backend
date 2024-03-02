@@ -2,6 +2,7 @@ package com.chatai.demo.questions;
 
 import com.chatai.demo.questions.model.BaseResponse;
 import com.chatai.demo.questions.model.QuestionRequest;
+import com.chatai.demo.questions.model.SaveRequestAndResponseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,18 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Override
     public List<QuestionsEntity> getAllQuestion() {
         return questionsRepo.findAll();
+    }
+
+    @Override
+    public BaseResponse saveRequestAndResponse(String audioName, SaveRequestAndResponseRequest request) {
+        QuestionsEntity questionsEntity = questionsRepo.findByAudioFileName(audioName);
+        if (questionsEntity != null){
+            questionsEntity.setRequest(request.getRequest());
+            questionsEntity.setResponse(request.getResponse());
+            questionsRepo.save(questionsEntity);
+            return new BaseResponse(true, "Request and Response modified successfully");
+        } else {
+            return new BaseResponse(false, "Question not exists");
+        }
     }
 }

@@ -10,7 +10,8 @@ public class QuestionRequest {
     private String answer;
     private String audioFileName;
 
-    public QuestionRequest(String question, String answer, String audioFileName) {
+
+    public QuestionRequest(String question, String answer, String audioFileName, String request, String response) {
         this.question = question;
         this.answer = answer;
         this.audioFileName = audioFileName;

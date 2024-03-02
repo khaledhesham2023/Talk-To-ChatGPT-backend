@@ -23,6 +23,12 @@ public class QuestionsEntity {
     @Column(name = "voice_file_name", columnDefinition = "VARCHAR(255)")
     private String audioFileName;
 
+    @Column(name = "request",columnDefinition = "JSON")
+    private String request;
+
+    @Column(name = "response",columnDefinition = "JSON")
+    private String response;
+
 
     public QuestionsEntity() {
     }
@@ -64,5 +70,21 @@ public class QuestionsEntity {
 
     public String getAudioFileName() {
         return audioFileName;
+    }
+
+    public void setRequest(String request) {
+        this.request = request;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public String getResponse() {
+        return response;
     }
 }
