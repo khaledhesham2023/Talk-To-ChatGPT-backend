@@ -29,15 +29,19 @@ public class QuestionsEntity {
     @Column(name = "response",columnDefinition = "JSON")
     private String response;
 
+    @Column(name = "created_time",columnDefinition = "VARCHAR(255)")
+    private String createdTime;
+
 
     public QuestionsEntity() {
     }
 
-    public QuestionsEntity(Long id, String question, String answer, String audioFileName) {
+    public QuestionsEntity(Long id, String question, String answer, String audioFileName, String createdTime) {
         this.id = id;
         this.question = question;
         this.answer = answer;
         this.audioFileName = audioFileName;
+        this.createdTime = createdTime;
     }
 
     public Long getId() {
@@ -86,5 +90,13 @@ public class QuestionsEntity {
 
     public String getResponse() {
         return response;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
     }
 }

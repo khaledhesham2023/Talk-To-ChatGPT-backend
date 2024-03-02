@@ -15,7 +15,7 @@ public class QuestionsServiceImpl implements QuestionsService {
 
     @Override
     public BaseResponse saveQuestion(QuestionRequest request) {
-        QuestionsEntity question = new QuestionsEntity(null, request.getQuestion(), request.getAnswer(), request.getAudioFileName());
+        QuestionsEntity question = new QuestionsEntity(null, request.getQuestion(), request.getAnswer(), request.getAudioFileName(), request.getCreatedTime());
         questionsRepo.save(question);
         return new BaseResponse(true, "Question saved successfully");
     }
