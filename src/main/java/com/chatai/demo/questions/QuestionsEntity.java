@@ -20,8 +20,11 @@ public class QuestionsEntity {
     @Column(name = "answer", columnDefinition = "LONGTEXT")
     private String answer;
 
-    @Column(name = "voice_file_name", columnDefinition = "VARCHAR(255)")
-    private String audioFileName;
+    @Column(name = "voice_question_file_name", columnDefinition = "VARCHAR(255)")
+    private String audioQuestionFileName;
+
+    @Column(name = "voice_answer_file_name", columnDefinition = "VARCHAR(255)")
+    private String audioAnswerFileName;
 
     @Column(name = "request",columnDefinition = "JSON")
     private String request;
@@ -36,11 +39,11 @@ public class QuestionsEntity {
     public QuestionsEntity() {
     }
 
-    public QuestionsEntity(Long id, String question, String answer, String audioFileName, String createdTime) {
+    public QuestionsEntity(Long id, String question, String answer, String audioQuestionFileName, String createdTime) {
         this.id = id;
         this.question = question;
         this.answer = answer;
-        this.audioFileName = audioFileName;
+        this.audioQuestionFileName = audioQuestionFileName;
         this.createdTime = createdTime;
     }
 
@@ -68,12 +71,12 @@ public class QuestionsEntity {
         this.answer = answer;
     }
 
-    public void setAudioFileName(String audioFileName) {
-        this.audioFileName = audioFileName;
+    public void setAudioQuestionFileName(String audioQuestionFileName) {
+        this.audioQuestionFileName = audioQuestionFileName;
     }
 
-    public String getAudioFileName() {
-        return audioFileName;
+    public String getAudioQuestionFileName() {
+        return audioQuestionFileName;
     }
 
     public void setRequest(String request) {
@@ -98,5 +101,13 @@ public class QuestionsEntity {
 
     public String getCreatedTime() {
         return createdTime;
+    }
+
+    public void setAudioAnswerFileName(String audioAnswerFileName) {
+        this.audioAnswerFileName = audioAnswerFileName;
+    }
+
+    public String getAudioAnswerFileName() {
+        return audioAnswerFileName;
     }
 }

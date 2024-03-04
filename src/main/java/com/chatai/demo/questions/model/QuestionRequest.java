@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 public class QuestionRequest {
     private String question;
     private String answer;
-    private String audioFileName;
+    private String audioQuestionFileName;
     private String createdTime;
 
 
-    public QuestionRequest(String question, String answer, String audioFileName, String createdTime) {
+    public QuestionRequest(String question, String answer, String audioQuestionFileName, String createdTime) {
         this.question = question;
         this.answer = answer;
-        this.audioFileName = audioFileName;
+        this.audioQuestionFileName = audioQuestionFileName;
         this.createdTime = createdTime;
     }
 
@@ -38,12 +38,12 @@ public class QuestionRequest {
         this.answer = answer;
     }
 
-    public void setAudioFileName(String audioFileName) {
-        this.audioFileName = audioFileName;
+    public void setAudioFileName(String audioQuestionFileName) {
+        this.audioQuestionFileName = audioQuestionFileName;
     }
 
-    public String getAudioFileName() {
-        return audioFileName;
+    public String getAudioQuestionFileName() {
+        return audioQuestionFileName;
     }
 
     public void setCreatedTime(String createdTime) {

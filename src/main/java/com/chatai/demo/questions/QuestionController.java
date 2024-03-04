@@ -2,6 +2,7 @@ package com.chatai.demo.questions;
 
 import com.chatai.demo.questions.model.BaseResponse;
 import com.chatai.demo.questions.model.QuestionRequest;
+import com.chatai.demo.questions.model.SaveAudioResponseNameRequest;
 import com.chatai.demo.questions.model.SaveRequestAndResponseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +30,10 @@ public class QuestionController {
     @PostMapping("saveRequestAndResponse/{audioName}")
     public ResponseEntity<BaseResponse> saveRequestAndResponse(@PathVariable("audioName") String audioName, @RequestBody SaveRequestAndResponseRequest request){
         return ResponseEntity.ok(questionsService.saveRequestAndResponse(audioName, request));
+    }
+
+    @PostMapping("saveAudioAnswer")
+    public ResponseEntity<BaseResponse> saveAudioAnswer(@RequestBody SaveAudioResponseNameRequest request){
+        return ResponseEntity.ok(questionsService.saveAudioResponseName(request));
     }
 }
