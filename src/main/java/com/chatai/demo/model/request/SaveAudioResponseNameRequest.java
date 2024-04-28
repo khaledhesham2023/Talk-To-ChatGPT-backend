@@ -1,4 +1,4 @@
-package com.chatai.demo.questions.model;
+package com.chatai.demo.model.request;
 
 public class SaveAudioResponseNameRequest {
     private String audioQuestionFileName;

@@ -1,4 +1,4 @@
-package com.chatai.demo.questions.model;
+package com.chatai.demo.model.response;
 
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;

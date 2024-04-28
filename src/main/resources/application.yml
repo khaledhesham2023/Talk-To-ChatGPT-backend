@@ -1,5 +1,7 @@
 server:
   port: 8080
+  tomcat:
+      connection-timeout: 20000
 
 spring:
   datasource:
@@ -18,3 +20,17 @@ spring:
           storage_engine: InnoDB
   thymeleaf:
     enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+
+minio:
+  access_key:
+  secret_key:
+
+openai:
+  api_key:
+  url:
+  chat_completion_model: gpt-3.5-turbo
+  transcription_model: whisper-1
+  text_speech_model: tts-1
+  pathname: D:\files\

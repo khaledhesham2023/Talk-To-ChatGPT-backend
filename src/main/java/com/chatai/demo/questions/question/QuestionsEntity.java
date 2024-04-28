@@ -1,5 +1,6 @@
-package com.chatai.demo.questions;
+package com.chatai.demo.questions.question;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +28,11 @@ public class QuestionsEntity {
     private String audioAnswerFileName;
 
     @Column(name = "request",columnDefinition = "JSON")
+    @JsonIgnore
     private String request;
 
     @Column(name = "response",columnDefinition = "JSON")
+    @JsonIgnore
     private String response;
 
     @Column(name = "created_time",columnDefinition = "VARCHAR(255)")
@@ -39,13 +42,26 @@ public class QuestionsEntity {
     public QuestionsEntity() {
     }
 
-    public QuestionsEntity(Long id, String question, String answer, String audioQuestionFileName, String createdTime) {
+    public QuestionsEntity(Long id, String question, String answer, String createdTime, String request, String response, String audioQuestionFileName, String audioAnswerFileName) {
         this.id = id;
         this.question = question;
         this.answer = answer;
-        this.audioQuestionFileName = audioQuestionFileName;
         this.createdTime = createdTime;
+        this.request = request;
+        this.response = response;
+        this.audioQuestionFileName = audioQuestionFileName;
+        this.audioAnswerFileName = audioAnswerFileName;
     }
+
+    public QuestionsEntity(Long id, String question, String answer, String createdTime, String request, String response) {
+        this.id = id;
+        this.question = question;
+        this.answer = answer;
+        this.createdTime = createdTime;
+        this.request = request;
+        this.response = response;
+    }
+
 
     public Long getId() {
         return id;
@@ -109,5 +125,19 @@ public class QuestionsEntity {
 
     public String getAudioAnswerFileName() {
         return audioAnswerFileName;
+    }
+
+    @Override
+    public String toString() {
+        return "QuestionsEntity{" +
+                "id=" + id +
+                ", question='" + question + '\'' +
+                ", answer='" + answer + '\'' +
+                ", audioQuestionFileName='" + audioQuestionFileName + '\'' +
+                ", audioAnswerFileName='" + audioAnswerFileName + '\'' +
+                ", request='" + request + '\'' +
+                ", response='" + response + '\'' +
+                ", createdTime='" + createdTime + '\'' +
+                '}';
     }
 }
