@@ -8,10 +8,14 @@ import org.springframework.context.annotation.Configuration;
 public class MinioConfiguration {
     private String accessKey;
     private String secretKey;
+    private String bucketName;
+    private String endPoint;
 
-    public MinioConfiguration(String accessKey, String secretKey) {
+    public MinioConfiguration(String accessKey, String secretKey,String bucketName, String endPoint) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
+        this.bucketName = bucketName;
+        this.endPoint = endPoint;
     }
 
     public MinioConfiguration() {
@@ -31,5 +35,21 @@ public class MinioConfiguration {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
+    }
+
+    public String getBucketName() {
+        return bucketName;
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
+    }
+
+    public String getEndPoint() {
+        return endPoint;
     }
 }

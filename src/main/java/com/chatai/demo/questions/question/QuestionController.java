@@ -1,5 +1,8 @@
 package com.chatai.demo.questions.question;
 
+import com.chatai.demo.model.CompletionObject;
+import com.chatai.demo.model.response.ChatCompletionResponse;
+import com.chatai.demo.model.response.SpeechResponse;
 import com.chatai.demo.utils.OpenAIConfig;
 import io.minio.errors.*;
 import okhttp3.ResponseBody;
@@ -28,28 +31,14 @@ public class QuestionController {
     @Autowired
     private QuestionsService questionsService;
 
-    @Autowired
-    private OpenAIConfig openAIConfig;
 
     @GetMapping("questions")
     public ResponseEntity<List<QuestionsEntity>> getAllQuestions() {
         return ResponseEntity.ok(questionsService.getAllQuestion());
     }
 
-    @PostMapping("insert")
-    public ResponseEntity<QuestionsEntity> insertQuestion(
-            @RequestParam("answer") String answer,
-            @RequestParam("answer_file") MultipartFile answerFile,
-            @RequestParam("question_file") MultipartFile questionFile,
-            @RequestParam("question") String question,
-            @RequestParam("request") String request,
-            @RequestParam("response") String response
-    ) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        return ResponseEntity.ok(questionsService.insertQuestion(answer, answerFile, questionFile, question, request, response));
-    }
-
-    @PostMapping("answer")
-    public ResponseEntity<byte[]> getSuccess(@RequestParam("question_file") MultipartFile questionFile) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    @PostMapping("voice-to-voice")
+    public ResponseEntity<byte[]> getAnswer(@RequestParam("question_file") MultipartFile questionFile) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         return ResponseEntity.ok(questionsService.getAnswer(questionFile));
     }
 }

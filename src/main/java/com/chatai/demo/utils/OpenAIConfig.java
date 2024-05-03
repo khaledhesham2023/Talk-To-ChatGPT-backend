@@ -1,7 +1,6 @@
 package com.chatai.demo.utils;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -14,14 +13,16 @@ public class OpenAIConfig {
     private String transcriptionModel;
     private String textSpeechModel;
     private String pathname;
+    private String topicName;
 
-    public OpenAIConfig(String apiKey, String url, String chatCompletionModel, String transcriptionModel, String textSpeechModel, String pathname) {
+    public OpenAIConfig(String apiKey, String url, String chatCompletionModel, String transcriptionModel, String textSpeechModel, String pathname, String topicName) {
         this.apiKey = apiKey;
         this.url = url;
         this.chatCompletionModel = chatCompletionModel;
         this.transcriptionModel = transcriptionModel;
         this.textSpeechModel = textSpeechModel;
         this.pathname = pathname;
+        this.topicName = topicName;
     }
 
     public OpenAIConfig() {
@@ -73,5 +74,13 @@ public class OpenAIConfig {
 
     public String getTranscriptionModel() {
         return transcriptionModel;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+
+    public String getTopicName() {
+        return topicName;
     }
 }

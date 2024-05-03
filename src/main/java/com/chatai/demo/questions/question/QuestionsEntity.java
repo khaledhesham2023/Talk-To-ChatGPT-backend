@@ -1,5 +1,8 @@
 package com.chatai.demo.questions.question;
 
+import com.chatai.demo.questiontoanswer.QuestionToAnswerEntity;
+import com.chatai.demo.speechtotext.SpeechToTextEntity;
+import com.chatai.demo.texttospeech.TextToSpeechEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,136 +11,88 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "questions",schema = "chataiapp")
+@Table(name = "questions", schema = "chataiapp")
 public class QuestionsEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "BIGINT")
     private Long id;
 
-    @Column(name = "question", columnDefinition = "LONGTEXT")
-    private String question;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sttId", referencedColumnName = "stt_id")
+    private SpeechToTextEntity speechToTextEntity;
 
-    @Column(name = "answer", columnDefinition = "LONGTEXT")
-    private String answer;
+    @ManyToOne
+    @JoinColumn(name = "qtaId",referencedColumnName = "qta_id")
+    private QuestionToAnswerEntity questionToAnswerEntity;
 
-    @Column(name = "voice_question_file_name", columnDefinition = "VARCHAR(255)")
-    private String audioQuestionFileName;
-
-    @Column(name = "voice_answer_file_name", columnDefinition = "VARCHAR(255)")
-    private String audioAnswerFileName;
-
-    @Column(name = "request",columnDefinition = "JSON")
-    @JsonIgnore
-    private String request;
-
-    @Column(name = "response",columnDefinition = "JSON")
-    @JsonIgnore
-    private String response;
+    @ManyToOne
+    @JoinColumn(name = "ttsId",referencedColumnName = "tts_id")
+    private TextToSpeechEntity textToSpeechEntity;
 
     @Column(name = "created_time",columnDefinition = "VARCHAR(255)")
     private String createdTime;
 
+    public QuestionsEntity(Long id, SpeechToTextEntity speechToTextEntity, QuestionToAnswerEntity questionToAnswerEntity, TextToSpeechEntity textToSpeechEntity, String createdTime) {
+        this.id = id;
+        this.speechToTextEntity = speechToTextEntity;
+        this.questionToAnswerEntity = questionToAnswerEntity;
+        this.textToSpeechEntity = textToSpeechEntity;
+        this.createdTime = createdTime;
+    }
 
     public QuestionsEntity() {
-    }
-
-    public QuestionsEntity(Long id, String question, String answer, String createdTime, String request, String response, String audioQuestionFileName, String audioAnswerFileName) {
-        this.id = id;
-        this.question = question;
-        this.answer = answer;
-        this.createdTime = createdTime;
-        this.request = request;
-        this.response = response;
-        this.audioQuestionFileName = audioQuestionFileName;
-        this.audioAnswerFileName = audioAnswerFileName;
-    }
-
-    public QuestionsEntity(Long id, String question, String answer, String createdTime, String request, String response) {
-        this.id = id;
-        this.question = question;
-        this.answer = answer;
-        this.createdTime = createdTime;
-        this.request = request;
-        this.response = response;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public void setAudioQuestionFileName(String audioQuestionFileName) {
-        this.audioQuestionFileName = audioQuestionFileName;
-    }
-
-    public String getAudioQuestionFileName() {
-        return audioQuestionFileName;
-    }
-
-    public void setRequest(String request) {
-        this.request = request;
-    }
-
-    public String getRequest() {
-        return request;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public void setCreatedTime(String createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public String getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setAudioAnswerFileName(String audioAnswerFileName) {
-        this.audioAnswerFileName = audioAnswerFileName;
-    }
-
-    public String getAudioAnswerFileName() {
-        return audioAnswerFileName;
     }
 
     @Override
     public String toString() {
         return "QuestionsEntity{" +
                 "id=" + id +
-                ", question='" + question + '\'' +
-                ", answer='" + answer + '\'' +
-                ", audioQuestionFileName='" + audioQuestionFileName + '\'' +
-                ", audioAnswerFileName='" + audioAnswerFileName + '\'' +
-                ", request='" + request + '\'' +
-                ", response='" + response + '\'' +
+                ", speechToTextEntity=" + speechToTextEntity +
+                ", questionToAnswerEntity=" + questionToAnswerEntity +
+                ", textToSpeechEntity=" + textToSpeechEntity +
                 ", createdTime='" + createdTime + '\'' +
                 '}';
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public void setQuestionToAnswerEntity(QuestionToAnswerEntity questionToAnswerEntity) {
+        this.questionToAnswerEntity = questionToAnswerEntity;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSpeechToTextEntity(SpeechToTextEntity speechToTextEntity) {
+        this.speechToTextEntity = speechToTextEntity;
+    }
+
+    public void setTextToSpeechEntity(TextToSpeechEntity textToSpeechEntity) {
+        this.textToSpeechEntity = textToSpeechEntity;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
+
+    public QuestionToAnswerEntity getQuestionToAnswerEntity() {
+        return questionToAnswerEntity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public SpeechToTextEntity getSpeechToTextEntity() {
+        return speechToTextEntity;
+    }
+
+    public TextToSpeechEntity getTextToSpeechEntity() {
+        return textToSpeechEntity;
     }
 }

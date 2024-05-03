@@ -48,7 +48,7 @@ public class ChatOpenAIClient {
         return responseBody;
     }
 
-    public CompletionObject getAnswerText(String text) throws IOException {
+    public ChatCompletionResponse getAnswerText(String text) throws IOException {
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(new Message("user", text));
         String requestForChat = gson.toJson(new ChatCompletionRequest(openAIConfig.getChatCompletionModel(), messages));
@@ -63,7 +63,7 @@ public class ChatOpenAIClient {
         Response response = okHttpClient.newCall(request).execute();
         String responseBody = response.body().string();
         ChatCompletionResponse chatCompletionResponse = gson.fromJson(responseBody, ChatCompletionResponse.class);
-        return new CompletionObject(chatCompletionResponse.getChoices().get(0).getMessage().getContent(), requestForChat, responseBody);
+        return chatCompletionResponse;
     }
 
     public AnswerFile getAnswerVoiceFile(String answerText) throws IOException {

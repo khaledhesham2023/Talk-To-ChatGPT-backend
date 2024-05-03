@@ -2,10 +2,7 @@ package com.chatai.demo.utils;
 
 import com.chatai.demo.model.AudioData;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.UploadObjectArgs;
+import io.minio.*;
 import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -28,18 +25,17 @@ public class MinioUploader {
             InsufficientDataException, ErrorResponseException,
             InvalidResponseException, XmlParserException, InternalException {
         MinioClient minioClient = MinioClient.builder()
-                .endpoint("http://127.0.0.1:9000/")
+                .endpoint(minioConfiguration.getEndPoint())
                 .credentials(minioConfiguration.getAccessKey(), minioConfiguration.getSecretKey())
                 .build();
-        boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket("uploadedrecords").build());
+        boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioConfiguration.getBucketName()).build());
         if (!found) {
-            minioClient.makeBucket(MakeBucketArgs.builder().bucket("uploadedrecords").build());
+            minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioConfiguration.getBucketName()).build());
         }
         minioClient.uploadObject(UploadObjectArgs.builder()
-                .bucket("uploadedrecords")
+                .bucket(minioConfiguration.getBucketName())
                 .object(data.getName())
                 .filename(data.getAbsolutePath())
                 .build());
-        System.out.println(data.getName() + " is successfully uploaded on MinIO");
     }
 }
