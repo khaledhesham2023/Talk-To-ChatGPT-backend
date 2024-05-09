@@ -1,11 +1,7 @@
 package com.chatai.demo.texttospeech;
 
 import com.chatai.demo.questiontoanswer.QuestionToAnswerEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "text_to_speech_table", schema = "chataiapp")

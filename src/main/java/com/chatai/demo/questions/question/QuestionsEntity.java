@@ -3,12 +3,7 @@ package com.chatai.demo.questions.question;
 import com.chatai.demo.questiontoanswer.QuestionToAnswerEntity;
 import com.chatai.demo.speechtotext.SpeechToTextEntity;
 import com.chatai.demo.texttospeech.TextToSpeechEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "questions", schema = "chataiapp")

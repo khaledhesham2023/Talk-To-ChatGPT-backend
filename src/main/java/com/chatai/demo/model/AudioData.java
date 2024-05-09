@@ -1,7 +1,5 @@
 package com.chatai.demo.model;
 
-import lombok.Builder;
-
 public class AudioData {
     private String name;
     private String type;
