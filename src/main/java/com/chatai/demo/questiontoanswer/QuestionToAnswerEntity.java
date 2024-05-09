@@ -23,11 +23,6 @@ public class QuestionToAnswerEntity {
     @JoinColumn(name = "sttId",referencedColumnName = "stt_id")
     private SpeechToTextEntity speechToTextEntity;
 
-
-    public void setQtaId(Long qtaId) {
-        this.qtaId = qtaId;
-    }
-
     public void setRequest(String request) {
         this.request = request;
     }
@@ -35,11 +30,6 @@ public class QuestionToAnswerEntity {
     public void setResponse(String response) {
         this.response = response;
     }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
 
     public Long getQtaId() {
         return qtaId;
@@ -57,23 +47,12 @@ public class QuestionToAnswerEntity {
         return answer;
     }
 
-    public void setSpeechToTextEntity(SpeechToTextEntity speechToTextEntity) {
-        this.speechToTextEntity = speechToTextEntity;
-    }
-
-    public SpeechToTextEntity getSpeechToTextEntity() {
-        return speechToTextEntity;
-    }
-
     public QuestionToAnswerEntity(Long qtaId, String answer, String request, String response, SpeechToTextEntity speechToTextEntity) {
         this.qtaId = qtaId;
         this.answer = answer;
         this.request = request;
         this.response = response;
         this.speechToTextEntity = speechToTextEntity;
-    }
-
-    public QuestionToAnswerEntity() {
     }
 
     @Override

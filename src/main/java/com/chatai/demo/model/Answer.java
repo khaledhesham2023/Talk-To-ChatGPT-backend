@@ -12,16 +12,8 @@ public class Answer {
     public Answer() {
     }
 
-    public void setRequestId(long requestId) {
-        this.requestId = requestId;
-    }
-
     public long getRequestId() {
         return requestId;
-    }
-
-    public void setFileBytes(byte[] fileBytes) {
-        this.fileBytes = fileBytes;
     }
 
     public byte[] getFileBytes() {

@@ -1,6 +1,5 @@
 package com.chatai.demo.speechtotext;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -31,40 +30,8 @@ public class SpeechToTextEntity {
         this.requestBody = requestBody;
         this.responseBody = responseBody;
     }
-
-    public SpeechToTextEntity() {
-    }
-
-    public void setSttId(Long sttId) {
-        this.sttId = sttId;
-    }
-
-    public void setResponseBody(String responseBody) {
-        this.responseBody = responseBody;
-    }
-
-    public void setRequestBody(String requestBody) {
-        this.requestBody = requestBody;
-    }
-
-    public void setQuestionFileName(String questionFileName) {
-        this.questionFileName = questionFileName;
-    }
-
     public void setQuestion(String question) {
         this.question = question;
-    }
-
-    public String getResponseBody() {
-        return responseBody;
-    }
-
-    public String getRequestBody() {
-        return requestBody;
-    }
-
-    public String getQuestionFileName() {
-        return questionFileName;
     }
 
     public String getQuestion() {

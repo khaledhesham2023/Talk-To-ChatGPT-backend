@@ -1,12 +1,10 @@
 package com.chatai.demo.model;
 
 public class CompletionObject {
-    private String answerText;
     private String request;
     private String response;
 
-    public CompletionObject(String answerText, String request, String response) {
-        this.answerText = answerText;
+    public CompletionObject(String request, String response) {
         this.request = request;
         this.response = response;
     }
@@ -28,13 +26,5 @@ public class CompletionObject {
 
     public String getRequest() {
         return request;
-    }
-
-    public void setAnswerText(String answerText) {
-        this.answerText = answerText;
-    }
-
-    public String getAnswerText() {
-        return answerText;
     }
 }

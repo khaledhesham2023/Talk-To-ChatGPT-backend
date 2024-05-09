@@ -29,24 +29,24 @@ public class MinioConfiguration {
         this.accessKey = accessKey;
     }
 
-    public String getSecretKey() {
-        return secretKey;
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
     }
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
     }
 
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
+    public String getSecretKey() {
+        return secretKey;
     }
 
     public String getBucketName() {
         return bucketName;
-    }
-
-    public void setEndPoint(String endPoint) {
-        this.endPoint = endPoint;
     }
 
     public String getEndPoint() {

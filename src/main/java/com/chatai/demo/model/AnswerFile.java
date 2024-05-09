@@ -14,14 +14,6 @@ public class AnswerFile {
     public AnswerFile() {
     }
 
-    public void setAnswerFile(File answerFile) {
-        this.answerFile = answerFile;
-    }
-
-    public void setAnswerFileName(String answerFileName) {
-        this.answerFileName = answerFileName;
-    }
-
     public File getAnswerFile() {
         return answerFile;
     }

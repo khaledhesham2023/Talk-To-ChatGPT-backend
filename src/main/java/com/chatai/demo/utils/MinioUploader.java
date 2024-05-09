@@ -24,7 +24,6 @@ public class MinioUploader {
             InvalidKeyException, ServerException,
             InsufficientDataException, ErrorResponseException,
             InvalidResponseException, XmlParserException, InternalException {
-        System.out.println("url is " + minioConfiguration.getAccessKey());
         MinioClient minioClient = MinioClient.builder()
                 .endpoint(minioConfiguration.getEndPoint())
                 .credentials(minioConfiguration.getAccessKey(), minioConfiguration.getSecretKey())

@@ -1,14 +1,9 @@
 package com.chatai.demo.questions.question;
 
 import com.chatai.demo.model.Answer;
-import com.chatai.demo.model.AnswerData;
-import com.chatai.demo.model.AnswerFile;
-import com.chatai.demo.model.response.ChatCompletionResponse;
-import com.chatai.demo.model.response.SpeechResponse;
 import io.minio.errors.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

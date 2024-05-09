@@ -1,7 +1,6 @@
 package com.chatai.demo.utils;
 
 import com.chatai.demo.model.AnswerFile;
-import com.chatai.demo.model.CompletionObject;
 import com.chatai.demo.model.Message;
 import com.chatai.demo.model.request.ChatCompletionRequest;
 import com.chatai.demo.model.request.TextToSpeechRequest;
@@ -9,15 +8,11 @@ import com.chatai.demo.model.response.ChatCompletionResponse;
 import com.chatai.demo.model.response.SpeechResponse;
 import com.google.gson.Gson;
 import okhttp3.*;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Random;
 
 @Configuration
@@ -44,8 +39,7 @@ public class ChatOpenAIClient {
                 .post(requestBody)
                 .build();
         Response response = okHttpClient.newCall(request).execute();
-        SpeechResponse responseBody = gson.fromJson(response.body().string(), SpeechResponse.class);
-        return responseBody;
+        return gson.fromJson(response.body().string(), SpeechResponse.class);
     }
 
     public ChatCompletionResponse getAnswerText(String text) throws IOException {
@@ -61,9 +55,9 @@ public class ChatOpenAIClient {
                 .addHeader("Authorization", "Bearer " + openAIConfig.getApiKey())
                 .build();
         Response response = okHttpClient.newCall(request).execute();
+        assert response.body() != null;
         String responseBody = response.body().string();
-        ChatCompletionResponse chatCompletionResponse = gson.fromJson(responseBody, ChatCompletionResponse.class);
-        return chatCompletionResponse;
+        return gson.fromJson(responseBody, ChatCompletionResponse.class);
     }
 
     public AnswerFile getAnswerVoiceFile(String answerText) throws IOException {

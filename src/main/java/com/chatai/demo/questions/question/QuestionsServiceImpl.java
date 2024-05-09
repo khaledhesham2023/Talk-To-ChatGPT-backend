@@ -2,7 +2,6 @@ package com.chatai.demo.questions.question;
 
 import com.chatai.demo.model.Answer;
 import com.chatai.demo.model.AnswerFile;
-import com.chatai.demo.model.CompletionObject;
 import com.chatai.demo.model.response.ChatCompletionResponse;
 import com.chatai.demo.model.response.SpeechResponse;
 import com.chatai.demo.questiontoanswer.QuestionToAnswerEntity;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,7 +27,6 @@ import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

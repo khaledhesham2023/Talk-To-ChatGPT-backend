@@ -51,43 +51,11 @@ public class QuestionsEntity {
                 '}';
     }
 
-    public void setCreatedTime(String createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public void setQuestionToAnswerEntity(QuestionToAnswerEntity questionToAnswerEntity) {
-        this.questionToAnswerEntity = questionToAnswerEntity;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setSpeechToTextEntity(SpeechToTextEntity speechToTextEntity) {
-        this.speechToTextEntity = speechToTextEntity;
-    }
-
-    public void setTextToSpeechEntity(TextToSpeechEntity textToSpeechEntity) {
-        this.textToSpeechEntity = textToSpeechEntity;
-    }
-
-    public String getCreatedTime() {
-        return createdTime;
-    }
-
-    public QuestionToAnswerEntity getQuestionToAnswerEntity() {
-        return questionToAnswerEntity;
-    }
-
     public Long getId() {
         return id;
-    }
-
-    public SpeechToTextEntity getSpeechToTextEntity() {
-        return speechToTextEntity;
-    }
-
-    public TextToSpeechEntity getTextToSpeechEntity() {
-        return textToSpeechEntity;
     }
 }

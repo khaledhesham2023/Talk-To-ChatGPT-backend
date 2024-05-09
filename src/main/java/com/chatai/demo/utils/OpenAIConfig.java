@@ -32,6 +32,26 @@ public class OpenAIConfig {
         this.apiKey = apiKey;
     }
 
+    public void setChatCompletionModel(String chatCompletionModel) {
+        this.chatCompletionModel = chatCompletionModel;
+    }
+
+    public void setPathname(String pathname) {
+        this.pathname = pathname;
+    }
+
+    public void setTextSpeechModel(String textSpeechModel) {
+        this.textSpeechModel = textSpeechModel;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+
+    public void setTranscriptionModel(String transcriptionModel) {
+        this.transcriptionModel = transcriptionModel;
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
@@ -44,40 +64,21 @@ public class OpenAIConfig {
         return url;
     }
 
-    public void setChatCompletionModel(String chatCompletionModel) {
-        this.chatCompletionModel = chatCompletionModel;
-    }
-
     public String getChatCompletionModel() {
         return chatCompletionModel;
-    }
-
-    public void setPathname(String pathname) {
-        this.pathname = pathname;
     }
 
     public String getPathname() {
         return pathname;
     }
 
-    public void setTextSpeechModel(String textSpeechModel) {
-        this.textSpeechModel = textSpeechModel;
-    }
-
     public String getTextSpeechModel() {
         return textSpeechModel;
     }
 
-    public void setTranscriptionModel(String transcriptionModel) {
-        this.transcriptionModel = transcriptionModel;
-    }
 
     public String getTranscriptionModel() {
         return transcriptionModel;
-    }
-
-    public void setTopicName(String topicName) {
-        this.topicName = topicName;
     }
 
     public String getTopicName() {

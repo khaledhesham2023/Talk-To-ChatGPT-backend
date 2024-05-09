@@ -28,11 +28,6 @@ public class TextToSpeechEntity {
         this.response = response;
     }
 
-    public void setTtsId(Long ttsId) {
-        this.ttsId = ttsId;
-    }
-
-
     public String getResponse() {
         return response;
     }
@@ -50,21 +45,6 @@ public class TextToSpeechEntity {
         return ttsId;
     }
 
-    public void setQuestionToAnswerEntity(QuestionToAnswerEntity questionToAnswerEntity) {
-        this.questionToAnswerEntity = questionToAnswerEntity;
-    }
-
-    public QuestionToAnswerEntity getQuestionToAnswerEntity() {
-        return questionToAnswerEntity;
-    }
-
-    public void setAnswerFilename(String answerFilename) {
-        this.answerFilename = answerFilename;
-    }
-
-    public String getAnswerFilename() {
-        return answerFilename;
-    }
 
     public TextToSpeechEntity(Long ttsId, String answerFilename, String request, String response, QuestionToAnswerEntity questionToAnswerEntity) {
         this.ttsId = ttsId;
@@ -72,9 +52,6 @@ public class TextToSpeechEntity {
         this.request = request;
         this.response = response;
         this.questionToAnswerEntity = questionToAnswerEntity;
-    }
-
-    public TextToSpeechEntity() {
     }
 
     @Override
