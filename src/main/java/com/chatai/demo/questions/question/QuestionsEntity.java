@@ -58,4 +58,36 @@ public class QuestionsEntity {
     public Long getId() {
         return id;
     }
+
+    public void setQuestionToAnswerEntity(QuestionToAnswerEntity questionToAnswerEntity) {
+        this.questionToAnswerEntity = questionToAnswerEntity;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public void setSpeechToTextEntity(SpeechToTextEntity speechToTextEntity) {
+        this.speechToTextEntity = speechToTextEntity;
+    }
+
+    public void setTextToSpeechEntity(TextToSpeechEntity textToSpeechEntity) {
+        this.textToSpeechEntity = textToSpeechEntity;
+    }
+
+    public TextToSpeechEntity getTextToSpeechEntity() {
+        return textToSpeechEntity;
+    }
+
+    public QuestionToAnswerEntity getQuestionToAnswerEntity() {
+        return questionToAnswerEntity;
+    }
+
+    public SpeechToTextEntity getSpeechToTextEntity() {
+        return speechToTextEntity;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
 }

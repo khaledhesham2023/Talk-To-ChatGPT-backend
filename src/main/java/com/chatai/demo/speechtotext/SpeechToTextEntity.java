@@ -1,5 +1,6 @@
 package com.chatai.demo.speechtotext;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,6 +10,7 @@ public class SpeechToTextEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stt_id",columnDefinition = "BIGINT")
+    @JsonIgnore
     private Long sttId;
 
     @Column(name = "stt_question",columnDefinition = "LONGTEXT")
@@ -18,9 +20,11 @@ public class SpeechToTextEntity {
     private String questionFileName;
 
     @Column(name = "stt_request_body",columnDefinition = "LONGTEXT")
+    @JsonIgnore
     private String requestBody;
 
     @Column(name = "stt_response_body",columnDefinition = "LONGTEXT")
+    @JsonIgnore
     private String responseBody;
 
     public SpeechToTextEntity(Long sttId, String question, String questionFileName, String requestBody, String responseBody) {
@@ -42,6 +46,9 @@ public class SpeechToTextEntity {
         return sttId;
     }
 
+    public SpeechToTextEntity() {
+    }
+
     @Override
     public String toString() {
         return "SpeechToTextEntity{" +
@@ -51,5 +58,33 @@ public class SpeechToTextEntity {
                 ", requestBody='" + requestBody + '\'' +
                 ", responseBody='" + responseBody + '\'' +
                 '}';
+    }
+
+    public void setQuestionFileName(String questionFileName) {
+        this.questionFileName = questionFileName;
+    }
+
+    public void setRequestBody(String requestBody) {
+        this.requestBody = requestBody;
+    }
+
+    public void setResponseBody(String responseBody) {
+        this.responseBody = responseBody;
+    }
+
+    public void setSttId(Long sttId) {
+        this.sttId = sttId;
+    }
+
+    public String getResponseBody() {
+        return responseBody;
+    }
+
+    public String getQuestionFileName() {
+        return questionFileName;
+    }
+
+    public String getRequestBody() {
+        return requestBody;
     }
 }
