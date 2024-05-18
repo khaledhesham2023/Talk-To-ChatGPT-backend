@@ -12,16 +12,14 @@ public class OpenAIConfig {
     private String chatCompletionModel;
     private String transcriptionModel;
     private String textSpeechModel;
-    private String pathname;
     private String topicName;
 
-    public OpenAIConfig(String apiKey, String url, String chatCompletionModel, String transcriptionModel, String textSpeechModel, String pathname, String topicName) {
+    public OpenAIConfig(String apiKey, String url, String chatCompletionModel, String transcriptionModel, String textSpeechModel, String topicName) {
         this.apiKey = apiKey;
         this.url = url;
         this.chatCompletionModel = chatCompletionModel;
         this.transcriptionModel = transcriptionModel;
         this.textSpeechModel = textSpeechModel;
-        this.pathname = pathname;
         this.topicName = topicName;
     }
 
@@ -34,10 +32,6 @@ public class OpenAIConfig {
 
     public void setChatCompletionModel(String chatCompletionModel) {
         this.chatCompletionModel = chatCompletionModel;
-    }
-
-    public void setPathname(String pathname) {
-        this.pathname = pathname;
     }
 
     public void setTextSpeechModel(String textSpeechModel) {
@@ -68,14 +62,9 @@ public class OpenAIConfig {
         return chatCompletionModel;
     }
 
-    public String getPathname() {
-        return pathname;
-    }
-
     public String getTextSpeechModel() {
         return textSpeechModel;
     }
-
 
     public String getTranscriptionModel() {
         return transcriptionModel;

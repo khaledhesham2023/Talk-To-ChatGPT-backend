@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -26,20 +27,32 @@ public class ChatOpenAIClient {
     @Autowired
     private Gson gson;
 
-    public SpeechResponse getSpeechText(File file) throws IOException {
-        RequestBody requestBody = new MultipartBody.Builder()
+    public SpeechResponse getSpeechText(MultipartFile file) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        try (FileOutputStream fos = new FileOutputStream(convFile)) {
+            fos.write(file.getBytes());
+        }
+        // Create RequestBody for the file
+        RequestBody fileRequestBody = RequestBody.create(convFile, MediaType.parse("multipart/form-data"));
+
+        // Build multipart form-data request
+        MultipartBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file))
+                .addFormDataPart("file", convFile.getName(), fileRequestBody)
                 .addFormDataPart("model", openAIConfig.getTranscriptionModel())
                 .build();
+
+        // Build the request
         Request request = new Request.Builder()
                 .url(openAIConfig.getUrl() + "audio/transcriptions")
                 .addHeader("Authorization", "Bearer " + openAIConfig.getApiKey())
-                .addHeader("Content-Type", "multipart/form-data")
                 .post(requestBody)
                 .build();
-        Response response = okHttpClient.newCall(request).execute();
-        return gson.fromJson(response.body().string(), SpeechResponse.class);
+
+        // Execute the request and handle the response
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            return gson.fromJson(response.body().string(), SpeechResponse.class);
+        }
     }
 
     public ChatCompletionResponse getAnswerText(String text) throws IOException {
@@ -62,8 +75,6 @@ public class ChatOpenAIClient {
 
     public AnswerFile getAnswerVoiceFile(String answerText) throws IOException {
         String answerFileName = getAnswerFileName();
-        File file = new File(openAIConfig.getPathname() + answerFileName);
-        System.out.println(file.getAbsolutePath());
         String request = gson.toJson(new TextToSpeechRequest(openAIConfig.getTextSpeechModel(), answerText, "alloy"));
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody requestBody = RequestBody.create(mediaType, request);
@@ -75,17 +86,14 @@ public class ChatOpenAIClient {
                 .build();
         ResponseBody response = okHttpClient.newCall(request1).execute().body();
         if (response != null) {
-            try (InputStream inputStream = response.byteStream();
-                 OutputStream outputStream = new FileOutputStream(file)) {
-                byte[] buffer = new byte[4096];
-                int read;
-                while ((read = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, read);
+            try (InputStream inputStream = response.byteStream()){
+                byte[] buffer = inputStream.readAllBytes();
+                MultipartFile multipartFile = new InMemoryMultipartFile(answerFileName,answerFileName,"audio/mp3",buffer);
+                return new AnswerFile(multipartFile,answerFileName);
                 }
-                outputStream.flush();
-            }
+            } else {
+            throw new IOException("Failed to get response from the server");
         }
-        return new AnswerFile(file,answerFileName);
     }
 
     private String getAnswerFileName() {

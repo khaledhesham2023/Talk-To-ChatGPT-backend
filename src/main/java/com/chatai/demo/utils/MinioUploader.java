@@ -1,14 +1,14 @@
 package com.chatai.demo.utils;
 
-import com.chatai.demo.model.AudioData;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.minio.*;
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +19,7 @@ public class MinioUploader {
     @Autowired
     private MinioConfiguration minioConfiguration;
 
-    public void uploadFileIntoMinio(File data)
+    public void uploadFileIntoMinio(MultipartFile data, String filename)
             throws IOException, NoSuchAlgorithmException,
             InvalidKeyException, ServerException,
             InsufficientDataException, ErrorResponseException,
@@ -32,10 +32,11 @@ public class MinioUploader {
         if (!found) {
             minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioConfiguration.getBucketName()).build());
         }
-        minioClient.uploadObject(UploadObjectArgs.builder()
+        minioClient.putObject(PutObjectArgs.builder()
                 .bucket(minioConfiguration.getBucketName())
-                .object(data.getName())
-                .filename(data.getAbsolutePath())
+                .object(filename)
+                .stream(data.getInputStream(), data.getSize(), -1)
+                .contentType(data.getContentType())
                 .build());
     }
 }

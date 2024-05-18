@@ -1,12 +1,12 @@
 package com.chatai.demo.model;
 
-import java.io.File;
+import org.springframework.web.multipart.MultipartFile;
 
 public class AnswerFile {
-    private File answerFile;
+    private MultipartFile answerFile;
     private String answerFileName;
 
-    public AnswerFile(File answerFile, String answerFileName) {
+    public AnswerFile(MultipartFile answerFile, String answerFileName) {
         this.answerFile = answerFile;
         this.answerFileName = answerFileName;
     }
@@ -14,7 +14,7 @@ public class AnswerFile {
     public AnswerFile() {
     }
 
-    public File getAnswerFile() {
+    public MultipartFile getAnswerFile() {
         return answerFile;
     }
 

@@ -20,15 +20,16 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class QuestionsServiceImpl implements QuestionsService {
@@ -82,13 +83,13 @@ public class QuestionsServiceImpl implements QuestionsService {
      */
     @Override
     public long convertSpeechToText(MultipartFile questionFile) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        String questionFileName = getQuestionFileName();
         // Create a regular file for uploading into MinIO Bucket.
-        File voiceQuestion = uploadFileOnLocalStorage(questionFile);
-        minioUploader.uploadFileIntoMinio(voiceQuestion);
+        minioUploader.uploadFileIntoMinio(questionFile,questionFileName);
         // An API call to OpenAI to convert mp3 file into a question text.
-        SpeechResponse speechResponse = chatOpenAIClient.getSpeechText(voiceQuestion);
+        SpeechResponse speechResponse = chatOpenAIClient.getSpeechText(questionFile);
         // Creating a record for Speech-To-Text process to be logged into MySQL Database and Kafka Topic.
-        SpeechToTextEntity speechToTextEntity = new SpeechToTextEntity(null, speechResponse.getText(), voiceQuestion.getName(), voiceQuestion.getAbsolutePath(), new Gson().toJson(speechResponse));
+        SpeechToTextEntity speechToTextEntity = new SpeechToTextEntity(null, speechResponse.getText(), questionFileName, questionFile.getOriginalFilename(), new Gson().toJson(speechResponse));
         speechToTextRepo.save(speechToTextEntity);
         kafkaTemplate.send(openAIConfig.getTopicName(), speechToTextEntity.toString());
         return speechToTextEntity.getSttId();
@@ -133,14 +134,19 @@ public class QuestionsServiceImpl implements QuestionsService {
         // Sending an API request to convert the answer text into an AI-voiced record file of the answer.
         AnswerFile answerFile = chatOpenAIClient.getAnswerVoiceFile(questionToAnswerEntity.getAnswer());
         // uploading answer file into object storage bucket (MinIO).
-        minioUploader.uploadFileIntoMinio(answerFile.getAnswerFile());
+        minioUploader.uploadFileIntoMinio(answerFile.getAnswerFile(),answerFile.getAnswerFileName());
         // converting the voice file into a byteArray to be sent back to the client.
-        Path path = Paths.get(answerFile.getAnswerFile().getAbsolutePath());
+        File tempFile = File.createTempFile("temp", null);
+        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+            fos.write(answerFile.getAnswerFile().getBytes());
+        }
+        Path path = tempFile.toPath();
         byte[] answerFileBytes = Files.readAllBytes(path);
         // creating a record of text-to-speech and logging it into MySQL server and kafka topic
-        TextToSpeechEntity textToSpeechEntity = new TextToSpeechEntity(null, answerFile.getAnswerFileName(), new Gson().toJson(new SpeechResponse(questionToAnswerEntity.getAnswer())), answerFile.getAnswerFile().getAbsolutePath(),questionToAnswerEntity);
+        TextToSpeechEntity textToSpeechEntity = new TextToSpeechEntity(null, answerFile.getAnswerFileName(), new Gson().toJson(new SpeechResponse(questionToAnswerEntity.getAnswer())), answerFile.getAnswerFile().getOriginalFilename(),questionToAnswerEntity);
         textToSpeechRepo.save(textToSpeechEntity);
         kafkaTemplate.send(openAIConfig.getTopicName(), textToSpeechEntity.toString());
+        tempFile.delete();
         return new Answer(answerFileBytes, textToSpeechEntity.getTtsId());
     }
 
@@ -149,13 +155,7 @@ public class QuestionsServiceImpl implements QuestionsService {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return formatter.format(new Date(timeInMilliSeconds));
     }
-
-
-    private File uploadFileOnLocalStorage(MultipartFile file) throws IOException {
-        String dir = openAIConfig.getPathname();
-        String filePath = dir + file.getOriginalFilename();
-        File uploadedFile = new File(filePath);
-        file.transferTo(uploadedFile);
-        return uploadedFile;
+    private String getQuestionFileName() {
+        return "question-" + System.currentTimeMillis() + new Random().nextInt(1000000000) + ".mp3";
     }
 }
