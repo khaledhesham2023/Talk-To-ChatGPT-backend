@@ -150,6 +150,27 @@ public class QuestionsServiceImpl implements QuestionsService {
         return new Answer(answerFileBytes, textToSpeechEntity.getTtsId());
     }
 
+    @Override
+    public byte[] getAnswerFromText(SpeechResponse speechResponse) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+       SpeechToTextEntity speechToTextEntity = new SpeechToTextEntity(null,speechResponse.getText(),null,null,null);
+        // Sending API request to OpenAI get the appropriate answer text.
+        ChatCompletionResponse chatCompletionResponse = chatOpenAIClient.getAnswerText(speechResponse.getText());
+        // Creating a record for chat completion process and logging it into MySQL Database and Kafka Topic.
+        QuestionToAnswerEntity questionToAnswerEntity = new QuestionToAnswerEntity(
+                null,
+                chatCompletionResponse.getChoices().get(0).getMessage().getContent(),
+                new Gson().toJson(speechResponse),
+                new Gson().toJson(chatCompletionResponse),
+                speechToTextEntity
+        );
+        questionToAnswerRepo.save(questionToAnswerEntity);
+        kafkaTemplate.send(openAIConfig.getTopicName(), questionToAnswerEntity.toString());
+        Answer answer = convertTextToSpeech(questionToAnswerEntity.getQtaId());
+        QuestionsEntity questionsEntity = new QuestionsEntity(null,speechToTextEntity,questionToAnswerRepo.findById(questionToAnswerEntity.getQtaId()).orElseThrow(),textToSpeechRepo.findById(answer.getRequestId()).orElseThrow(),getCurrentTime(System.currentTimeMillis()));
+        questionsRepo.save(questionsEntity);
+        return answer.getFileBytes();
+    }
+
 
     private String getCurrentTime(long timeInMilliSeconds) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");

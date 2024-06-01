@@ -1,6 +1,7 @@
 package com.chatai.demo.questions.question;
 
 import com.chatai.demo.model.Answer;
+import com.chatai.demo.model.response.SpeechResponse;
 import io.minio.errors.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,4 +20,7 @@ public interface QuestionsService {
     long questionToAnswer(long sttId) throws IOException;
 
     Answer convertTextToSpeech(long qtaId) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
+
+    byte[] getAnswerFromText(SpeechResponse speechResponse) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
+
 }
