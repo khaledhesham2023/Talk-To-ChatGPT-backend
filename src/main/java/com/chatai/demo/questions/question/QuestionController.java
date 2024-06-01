@@ -32,4 +32,8 @@ public class QuestionController {
     public ResponseEntity<byte[]> getAnswerFromText(@RequestBody SpeechResponse speechResponse) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         return ResponseEntity.ok(questionsService.getAnswerFromText(speechResponse));
     }
+    @PostMapping("question-to-answer")
+    public ResponseEntity<QuestionsEntity> getAnswerTextFromQuestionText(@RequestBody SpeechResponse speechResponse) throws IOException {
+        return ResponseEntity.ok(questionsService.getAnswerFromQuestionText(speechResponse));
+    }
 }

@@ -23,4 +23,5 @@ public interface QuestionsService {
 
     byte[] getAnswerFromText(SpeechResponse speechResponse) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 
+    QuestionsEntity getAnswerFromQuestionText(SpeechResponse speechResponse) throws IOException;
 }

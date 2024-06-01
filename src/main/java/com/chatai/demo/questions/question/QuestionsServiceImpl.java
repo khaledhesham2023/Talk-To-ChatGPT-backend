@@ -171,6 +171,26 @@ public class QuestionsServiceImpl implements QuestionsService {
         return answer.getFileBytes();
     }
 
+    @Override
+    public QuestionsEntity getAnswerFromQuestionText(SpeechResponse speechResponse) throws IOException {
+        SpeechToTextEntity speechToTextEntity = new SpeechToTextEntity(null,speechResponse.getText(),null,null,null);
+        // Sending API request to OpenAI get the appropriate answer text.
+        ChatCompletionResponse chatCompletionResponse = chatOpenAIClient.getAnswerText(speechResponse.getText());
+        // Creating a record for chat completion process and logging it into MySQL Database and Kafka Topic.
+        QuestionToAnswerEntity questionToAnswerEntity = new QuestionToAnswerEntity(
+                null,
+                chatCompletionResponse.getChoices().get(0).getMessage().getContent(),
+                new Gson().toJson(speechResponse),
+                new Gson().toJson(chatCompletionResponse),
+                speechToTextEntity
+        );
+        questionToAnswerRepo.save(questionToAnswerEntity);
+        kafkaTemplate.send(openAIConfig.getTopicName(), questionToAnswerEntity.toString());
+        QuestionsEntity questionsEntity = new QuestionsEntity(null,speechToTextEntity,questionToAnswerEntity,null,getCurrentTime(System.currentTimeMillis()));
+        questionsRepo.save(questionsEntity);
+        return questionsEntity;
+    }
+
 
     private String getCurrentTime(long timeInMilliSeconds) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
