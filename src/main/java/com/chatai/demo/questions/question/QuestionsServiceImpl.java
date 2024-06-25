@@ -27,9 +27,7 @@ import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class QuestionsServiceImpl implements QuestionsService {
@@ -60,7 +58,9 @@ public class QuestionsServiceImpl implements QuestionsService {
 
     @Override
     public List<QuestionsEntity> getAllQuestion() {
-        return questionsRepo.findAll();
+        List<QuestionsEntity> questions = questionsRepo.findAll();
+        Collections.sort(questions, (o1, o2) -> Long.compare(o2.getId(), o1.getId()));
+        return questions;
     }
 
 

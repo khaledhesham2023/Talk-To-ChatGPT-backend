@@ -8,4 +8,5 @@ import java.util.List;
 
 @Repository
 public interface QuestionsRepo extends JpaRepository<QuestionsEntity,Long> {
+
 }
