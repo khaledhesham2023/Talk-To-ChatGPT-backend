@@ -1,0 +1,298 @@
+answer this prompt:
+QUESTION_TO_ASK
+
+guidelines are as following:
+"Create a JSON message suitable for a rule-processing engine. Follow these guidelines closely:
+•	Output Format: Your response must be in JSON format only. (do not add '''json before answer)
+•	JSON Schema Adherence: Do not alter the provided JSON schema's structure or add fields beyond what is specified.
+•	Content Relevance: Include only those sections of the JSON that are essential for representing the given statement. Your JSON should have sufficient detail to encapsulate all necessary information and rules derived from the statement.
+•	Rule Inclusion:
+•	Ensure all necessary rules are included to fully represent the information within the statement.
+•	Specifically, evaluate whether rules pertaining to 'Aggregation_Window_Duration' and 'Aggregation_Window_Events' are necessary and include them if so. The 'window time' should be expressed in minutes.
+•	Schema Compliance: Stick strictly to the provided JSON schema guidelines.
+•	Pattern Representation: If the statement involves patterns, include a 'pattern' section in your JSON. Use wildcard formats (e.g., 'a+bcdf') to represent these patterns.
+•	Clearly differentiate between pattern-specific rules and general rules.
+•	If the pattern describes a sequence of events, include the relevant duration within the 'pattern' section.
+•	Distinguish between 'aggregation_window_duration' (which applies to patterns) and the general duration associated with patterns.
+•	Aggregated Functions: An 'aggregated_window_duration' or 'aggregated_window_events' section is required if aggregated functions (avg, sum, min, max) are applied to a set of events, not just a single event.
+•	If a pattern includes a variable requiring 'aggregated_window_duration' for calculation, ensure this section is included in your JSON.
+•	Evaluation Criteria: The output JSON will be assessed for compliance with the schema documentation and constraints, ensuring all entities and values are valid and correctly applied.
+•	only include actions if actions is clearly stated in the user request.
+• Please generate a JSON message based on the following scenario, adhering strictly to the predefined ontology and schema constraints provided in the uploaded document. It's crucial that all values, including entities, locations, and other specific details, match exactly with those listed in the ontology. If the scenario includes details that don't align with the ontology, either omit these details or flag them as errors instead of attempting to integrate them. This precision is essential for ensuring the generated JSON message is valid and compliant with the rule-processing engine's requirements."
+entities and values as per the provided documentation."
+. Aggregation_Window_Duration and Aggregation_Window_events are optional.
+. Aggregation_Window_events is used when the user describe number of events  or a sequence of events.
+. Aggregation_Window_Duration is used , when the user prompt does include a duration for the window and not a number of events.
+. don't make assumptions about the windowTimeInMinutes if it is not specified in the user prompt part of the window duration.
+. check if the field part of the window can be used part of the pattern sequence if there is a pattern part of the output.
+
+
+
+•restrict the aggregation functions in windows and other sections to one of the following list
+{
+AVG,
+Sum,
+Count
+ }
+
+. restrict the operator to the following values
+
+{
+
+"equal",  which means equal to, used in numbers
+"not-equal", which means not equal to, used in numbers
+"greater-than", which means greater than.
+"greater-than-equal",  which means greater than or equal
+"less-than", which means less than
+"less-than-equal",  which means less than or equally
+"match",  which is equal for string.
+"not-match", which is not equal for string
+"starts-with", start with in string
+"ends-with", ends with in string
+"contains", contains certain string within a bigger string
+"not-contains", not contains this string within a bigger string
+"is-null", the value is null
+"not-null"  means the values is not null
+}
+
+•Ensure the entities exist in the following list:
+{
+Product,
+customer,
+Offer,
+Location
+}
+
+•Ensure the enrichment source table name exist in the entities list as follows:
+{
+Product,
+customer,
+Offer,
+Location
+}
+
+•Ensure the enrichment keyByEntity value is exist in the following list:
+{
+Product,
+customer,
+Offer,
+Location
+}
+
+.for the customer_segment only use one of the following values "High_Value" or "Low_Value".
+. only use the listed values for transaction_type as follows: {"Hospital", "Market", "Gas Station"}
+.differentiate between the time frame for calculating total value (aggregation window duration) and the time frame within which a sequence of specific actions must occur (pattern duration).
+
+•The customer entity has the following fields
+
+{
+    "customer": {
+        "description": "Represents a customer in the system",
+        "fields": {
+            "customerId": {
+                "type": "integer",
+                "description": "Unique identifier for the customer",
+                "constraints": [
+                    "Primary Key",
+                    "Not Null"
+                ]
+            },
+            "customer_segment": {
+                "type": "string",
+                "description": "the customer value assigned by the organization based on the customer behaviour.",
+                "constraints": [
+                    "Not Null"
+                ]
+            },
+            "firstName": {
+                "type": "string",
+                "description": "customer's first name",
+                "constraints": [
+                    "Not Null"
+                ]
+            },
+            "lastName": {
+                "type": "string",
+                "description": "Customer's last name",
+                "constraints": [
+                    "Not Null"
+                ]
+            },
+            "email": {
+                "type": "string",
+                "description": "Customer's email address",
+                "constraints": [
+                    "Not Null",
+                    "Unique"
+                ]
+            },
+            "phoneNumber": {
+                "type": "string",
+                "description": "Customer's phone number",
+                "constraints": []
+            },
+            "address": {
+                "type": "string",
+                "description": "Customer's physical address",
+                "constraints": []
+            },
+            "dateOfBirth": {
+                "type": "date",
+                "description": "Customer's date of birth",
+                "constraints": []
+            },
+            "registrationDate": {
+                "type": "datetime",
+                "description": "Date and time the customer was registered in the system",
+                "constraints": [
+                    "Not Null"
+                ]
+            }
+        }
+    }
+}
+
+. the product entity has the following structure:
+{
+    "Product": {
+        "description": "Represents a product or service in the system",
+        "fields": {
+            "productId": {
+                "type": "integer",
+                "description": "Unique identifier for the product",
+                "constraints": [
+                    "Primary Key",
+                    "Not Null"
+                ]
+            },
+            "productDescription": {
+                "type": "string",
+                "description": "the product detail",
+                "constraints": [
+                    "Not Null"
+                ]
+            },
+            "Product_name": {
+                "type": "string",
+                "description": "the product given name",
+                "constraints": [
+                    "Not Null"
+                ]
+            }
+        }
+    }
+}
+
+•	Ensure that the source section topic name is in the following list:
+{
+    "transactions": [
+        {
+            "topicName": "debitCard",
+            "fields": {
+                "Transaction_Amount": {
+                    "type": "decimal",
+                    "description": "The amount of the debit card transaction"
+                },
+		"transaction_type": {
+                    "type": "decimal",
+                    "description": "The location where the transaction happened."
+                }
+            }
+        },
+        {
+            "topicName": "creditCard",
+            "fields": {
+                "transaction_amount": {
+                    "type": "decimal",
+                    "description": "The amount of the credit card transaction"
+                }
+            }
+        },
+        {
+            "topicName": "sales_transaction",
+            "fields": {
+                "sales_amount": {
+                    "type": "decimal",
+                    "description": "The sales amount of the transaction"
+                }
+            }
+        }
+    ]
+}
+
+•The json file contains the “eventSource" section which describes the source topic name which mostly is Kafka topic. It takes the following format.
+
+"eventSource": {
+        "sourceTopic": "sales_transaction"
+    }
+
+•The json file will have a section that describe any rules as mentioned”
+    "listOfRules": [
+        {
+
+                "ruleName": "filter_transaction_amount",
+                "fieldName": "Transaction_amount",
+                "operator": "greater-than",
+                "value": 500
+
+        },
+  {
+
+                "ruleName": “last_5_events_average_rule",
+                "fieldName": " last_5_events_average ",
+                "operator": "greater-than",
+                "value": 500
+
+        },
+
+{
+        }
+    ]
+
+•The json file will contain the enrichment entity to enrich events.
+
+    "eventEnrichment": {
+        "enrichmentSource": "customer"
+    }
+
+•Sample for the pattern in json document:
+
+{
+    "eventSource": {
+        "sourceTopic": "debitCard"
+    },
+    "eventEnrichment": {
+        "enrichmentSource": "customer"
+    },
+    "Pattern": {
+        "PatternName": "small_transactions_followed_by_large_within_60_minutes",
+        "Wildcard": "A+B",
+        "DurationInMinutes": 60,
+        "Sequence": [
+            {
+                "Role": "A",
+                "ruleName": "small_transaction",
+                "roleFN": "Transaction_amount",
+                "operator": "BETWEEN",
+                "value": "1-50"
+            },
+            {
+                "Role": "B",
+                "ruleName": "large_transaction",
+                "roleFN": "Transaction_amount",
+                "operator": "greater-than",
+                "value": 1500
+            }
+        ]
+    },
+    "listOfRules": [
+        {
+
+                "ruleName": "filter_customer_segment",
+                "fieldName": "customer_segment",
+                "operator": "match",
+                "value": "high_value"
+
+        }
+    ]
+}

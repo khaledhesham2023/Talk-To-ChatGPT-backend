@@ -13,6 +13,7 @@ import com.chatai.demo.texttospeech.TextToSpeechRepo;
 import com.chatai.demo.utils.ChatOpenAIClient;
 import com.chatai.demo.utils.MinioUploader;
 import com.chatai.demo.utils.OpenAIConfig;
+import com.chatai.demo.utils.PromptFileReader;
 import com.google.gson.Gson;
 import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,9 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Autowired
     private ChatOpenAIClient chatOpenAIClient;
 
+    @Autowired
+    private PromptFileReader promptFileReader;
+
 
     @Override
     public List<QuestionsEntity> getAllQuestion() {
@@ -91,7 +95,7 @@ public class QuestionsServiceImpl implements QuestionsService {
         // Creating a record for Speech-To-Text process to be logged into MySQL Database and Kafka Topic.
         SpeechToTextEntity speechToTextEntity = new SpeechToTextEntity(null, speechResponse.getText(), questionFileName, questionFile.getOriginalFilename(), new Gson().toJson(speechResponse));
         speechToTextRepo.save(speechToTextEntity);
-        kafkaTemplate.send(openAIConfig.getTopicName(), speechToTextEntity.toString());
+//        kafkaTemplate.send(openAIConfig.getTopicName(), speechToTextEntity.toString());
         return speechToTextEntity.getSttId();
     }
 
@@ -106,17 +110,19 @@ public class QuestionsServiceImpl implements QuestionsService {
         // Getting the transcription record for chat completion of the saved question text.
         SpeechToTextEntity speechToTextEntity = speechToTextRepo.findById(sttId).orElseThrow();
         // Sending API request to OpenAI get the appropriate answer text.
-        ChatCompletionResponse chatCompletionResponse = chatOpenAIClient.getAnswerText(speechToTextEntity.getQuestion());
+        String fileContent = promptFileReader.readFile("prompt.txt");
+        String fullPromptQuestion = fileContent.replace("QUESTION_TO_ASK", speechToTextEntity.getQuestion());
+        ChatCompletionResponse chatCompletionResponse = chatOpenAIClient.getAnswerText(fullPromptQuestion);
         // Creating a record for chat completion process and logging it into MySQL Database and Kafka Topic.
         QuestionToAnswerEntity questionToAnswerEntity = new QuestionToAnswerEntity(
                 null,
-                chatCompletionResponse.getChoices().get(0).getMessage().getContent(),
+                chatCompletionResponse.getChoices().get(0).getMessage().getContent().replaceAll("```json","").replaceAll("```",""),
                 new Gson().toJson(new SpeechResponse(speechToTextEntity.getQuestion())),
                 new Gson().toJson(chatCompletionResponse),
                 speechToTextEntity
         );
         questionToAnswerRepo.save(questionToAnswerEntity);
-        kafkaTemplate.send(openAIConfig.getTopicName(), questionToAnswerEntity.toString());
+        kafkaTemplate.send(openAIConfig.getTopicName(), chatCompletionResponse.getChoices().get(0).getMessage().getContent().replaceAll("```json\n","").replaceAll("```",""));
         return questionToAnswerEntity.getQtaId();
     }
 
@@ -145,7 +151,7 @@ public class QuestionsServiceImpl implements QuestionsService {
         // creating a record of text-to-speech and logging it into MySQL server and kafka topic
         TextToSpeechEntity textToSpeechEntity = new TextToSpeechEntity(null, answerFile.getAnswerFileName(), new Gson().toJson(new SpeechResponse(questionToAnswerEntity.getAnswer())), answerFile.getAnswerFile().getOriginalFilename(),questionToAnswerEntity);
         textToSpeechRepo.save(textToSpeechEntity);
-        kafkaTemplate.send(openAIConfig.getTopicName(), textToSpeechEntity.toString());
+//        kafkaTemplate.send(openAIConfig.getTopicName(), textToSpeechEntity.toString());
         tempFile.delete();
         return new Answer(answerFileBytes, textToSpeechEntity.getTtsId());
     }
@@ -154,17 +160,19 @@ public class QuestionsServiceImpl implements QuestionsService {
     public byte[] getAnswerFromText(SpeechResponse speechResponse) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
        SpeechToTextEntity speechToTextEntity = new SpeechToTextEntity(null,speechResponse.getText(),null,null,null);
         // Sending API request to OpenAI get the appropriate answer text.
-        ChatCompletionResponse chatCompletionResponse = chatOpenAIClient.getAnswerText(speechResponse.getText());
+        String fileContent = promptFileReader.readFile("prompt.txt");
+        String fullPromptQuestion = fileContent.replace("QUESTION_TO_ASK", speechToTextEntity.getQuestion());
+        ChatCompletionResponse chatCompletionResponse = chatOpenAIClient.getAnswerText(fullPromptQuestion);
         // Creating a record for chat completion process and logging it into MySQL Database and Kafka Topic.
         QuestionToAnswerEntity questionToAnswerEntity = new QuestionToAnswerEntity(
                 null,
-                chatCompletionResponse.getChoices().get(0).getMessage().getContent(),
+                chatCompletionResponse.getChoices().get(0).getMessage().getContent().replaceAll("```json\n","").replaceAll("```",""),
                 new Gson().toJson(speechResponse),
                 new Gson().toJson(chatCompletionResponse),
                 speechToTextEntity
         );
         questionToAnswerRepo.save(questionToAnswerEntity);
-        kafkaTemplate.send(openAIConfig.getTopicName(), questionToAnswerEntity.toString());
+//        kafkaTemplate.send(openAIConfig.getTopicName(), questionToAnswerEntity.toString());
         Answer answer = convertTextToSpeech(questionToAnswerEntity.getQtaId());
         QuestionsEntity questionsEntity = new QuestionsEntity(null,speechToTextEntity,questionToAnswerRepo.findById(questionToAnswerEntity.getQtaId()).orElseThrow(),textToSpeechRepo.findById(answer.getRequestId()).orElseThrow(),getCurrentTime(System.currentTimeMillis()));
         questionsRepo.save(questionsEntity);
@@ -175,17 +183,19 @@ public class QuestionsServiceImpl implements QuestionsService {
     public QuestionsEntity getAnswerFromQuestionText(SpeechResponse speechResponse) throws IOException {
         SpeechToTextEntity speechToTextEntity = new SpeechToTextEntity(null,speechResponse.getText(),null,null,null);
         // Sending API request to OpenAI get the appropriate answer text.
-        ChatCompletionResponse chatCompletionResponse = chatOpenAIClient.getAnswerText(speechResponse.getText());
+        String fileContent = promptFileReader.readFile("prompt.txt");
+        String fullPromptQuestion = fileContent.replace("QUESTION_TO_ASK", speechToTextEntity.getQuestion());
+        ChatCompletionResponse chatCompletionResponse = chatOpenAIClient.getAnswerText(fullPromptQuestion);
         // Creating a record for chat completion process and logging it into MySQL Database and Kafka Topic.
         QuestionToAnswerEntity questionToAnswerEntity = new QuestionToAnswerEntity(
                 null,
-                chatCompletionResponse.getChoices().get(0).getMessage().getContent(),
+                chatCompletionResponse.getChoices().get(0).getMessage().getContent().replaceAll("```json\n","").replaceAll("```",""),
                 new Gson().toJson(speechResponse),
                 new Gson().toJson(chatCompletionResponse),
                 speechToTextEntity
         );
         questionToAnswerRepo.save(questionToAnswerEntity);
-        kafkaTemplate.send(openAIConfig.getTopicName(), questionToAnswerEntity.toString());
+        kafkaTemplate.send(openAIConfig.getTopicName(), chatCompletionResponse.getChoices().get(0).getMessage().getContent().replaceAll("```json\n","").replaceAll("```",""));
         QuestionsEntity questionsEntity = new QuestionsEntity(null,speechToTextEntity,questionToAnswerEntity,null,getCurrentTime(System.currentTimeMillis()));
         questionsRepo.save(questionsEntity);
         return questionsEntity;
